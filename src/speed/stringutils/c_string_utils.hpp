@@ -223,24 +223,24 @@ template<typename TpChar, typename TpIntegral>
 {
     if (str != nullptr)
     {
-        while (*str != '\0' && *str != val)
+        while (*str != '\0')
         {
+            if (*str == val)
+            {
+                return str;
+            }
+            
             ++str;
-        }
-        
-        if (*str != val)
-        {
-            str = nullptr;
         }
     }
     
-    return str;
+    return nullptr;
 }
 
 
 /**
  * @brief       Returns a pointer to the first occurrence of a value in the C string str. Only the
- *              firs num characters will be evaluated.
+ *              firs nbr characters will be evaluated.
  * @param       str : The C string.
  * @param       val : Character to be located.
  * @param       nbr : Maximum number of characters in which search.
@@ -248,24 +248,110 @@ template<typename TpChar, typename TpIntegral>
  *              found, the function returns a null pointer.
  */
 template<typename TpChar, typename TpIntegral>
-TpChar* strnchr(TpChar* str, const TpIntegral val, std::size_t nbr) noexcept
+[[nodiscard]] TpChar* strnchr(TpChar* str, const TpIntegral val, std::size_t nbr) noexcept
 {
     std::size_t i;
     
     if (str != nullptr)
     {
-        for (i = 0; *str != '\0' && *str != val && i < nbr - 1; ++i)
+        for (i = 0; *str != '\0' && i < nbr; ++i)
         {
+            if (*str == val)
+            {
+                return str;
+            }
+            
             ++str;
-        }
-        
-        if (*str != val)
-        {
-            str = nullptr;
         }
     }
     
-    return str;
+    return nullptr;
+}
+
+
+/**
+ * @brief       Returns a pointer to the last occurrence of a value in the C string str.
+ * @param       str : The C string.
+ * @param       val : Character to be located.
+ * @return      A pointer to the first occurrence of val in str. If the character is not
+ *              found, the function returns a null pointer.
+ */
+template<typename TpChar, typename TpIntegral>
+[[nodiscard]] TpChar* strrchr(TpChar* str, const TpIntegral val) noexcept
+{
+    TpChar* lst = nullptr;
+    
+    if (str != nullptr)
+    {
+        while (*str != '\0')
+        {
+            if (*str == val)
+            {
+                lst = str;
+            }
+            
+            ++str;
+        }
+    }
+    
+    return lst;
+}
+
+
+/**
+ * @brief       Returns a pointer to the last occurrence of a value in the C string str. Only the
+ *              firs nbr characters will be evaluated.
+ * @param       str : The C string.
+ * @param       val : Character to be located.
+ * @param       nbr : Maximum number of characters in which search.
+ * @return      A pointer to the first occurrence of val in str. If the character is not
+ *              found, the function returns a null pointer.
+ */
+template<typename TpChar, typename TpIntegral>
+[[nodiscard]] TpChar* strrnchr(TpChar* str, const TpIntegral val, std::size_t nbr) noexcept
+{
+    std::size_t i;
+    TpChar* lst = nullptr;
+    
+    if (str != nullptr)
+    {
+        for (i = 0; *str != '\0' && i < nbr; ++i)
+        {
+            if (*str == val)
+            {
+                lst = str;
+            }
+            
+            ++str;
+        }
+    }
+    
+    return lst;
+}
+
+
+/**
+ * @brief       Erase the characters after the value val in the C string str.
+ * @param       str : The C string.
+ * @param       val : The value.
+ * @return      A pointer to the first occurrence of val in str. If the character is not
+ *              found, the function returns a null pointer.
+ */
+template<typename TpChar, typename TpIntegral>
+TpChar* strcut(TpChar* str, const TpIntegral val) noexcept
+{
+    TpChar* lst;
+    
+    if (str != nullptr)
+    {
+        if ((lst = stringutils::strrchr(str, val)) != nullptr)
+        {
+            lst[1] = 0;
+            return str;
+        }
+    }
+    
+    return nullptr;
 }
 
 

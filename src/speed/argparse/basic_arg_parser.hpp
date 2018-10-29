@@ -130,7 +130,6 @@ public:
     /**
      * @brief       Perfect forwarding constructor.
      * @param       prog_name : The program name, used for print help menu.
-     * @param       prog_desc : The program description, used for print help menu.
      * @param       short_prefxs : Collection that contains the arguments short prefixes.
      * @param       long_prefxs : Collection that contains the arguments long prefixes.
      * @param       arg_desc_indentation : Indentation used to print arguments in the help menu.
@@ -151,7 +150,6 @@ public:
             typename TpString1_ = string_type,
             typename TpString2_ = string_type,
             typename TpString3_ = string_type,
-            typename TpString4_ = string_type,
             typename TpStringSet1_ = unordered_set_type<string_type>,
             typename TpStringSet2_ = unordered_set_type<string_type>,
             typename = std::enable_if_t<
@@ -160,14 +158,13 @@ public:
     >
     basic_arg_parser(
             TpString1_&& prog_name = string_type(),
-            TpString2_&& prog_desc = string_type(),
             TpStringSet1_&& short_prefxs = {"-"},
             TpStringSet2_&& long_prefxs = {"--"},
             std::size_t arg_desc_indentation = 2u,
             std::size_t max_desc_line_length = 80u,
             std::size_t desc_new_line_indentation = 2u,
-            TpString3_&& default_hlp_menu_id = string_type("--help"),
-            TpString4_&& err_id = string_type("error"),
+            TpString2_&& default_hlp_menu_id = string_type("--help"),
+            TpString3_&& err_id = string_type("error"),
             std::size_t max_unrecog_args = std::numeric_limits<std::size_t>::max(),
             arg_parser_flags flgs = arg_parser_flags::DEFAULT_ARG_PARSER_FLAGS
     )
@@ -178,13 +175,13 @@ public:
             , max_desc_line_length_(max_desc_line_length)
             , desc_new_line_indentation_(desc_new_line_indentation)
             , ihlp_text_list_()
-            , default_hlp_menu_id_(std::forward<TpString3_>(default_hlp_menu_id))
+            , default_hlp_menu_id_(std::forward<TpString2_>(default_hlp_menu_id))
             , hlp_arg_map_()
             , hlp_menus_()
             , current_vers_arg_(nullptr)
             , kyless_args_list_()
             , bse_arg_map_()
-            , err_id_(std::forward<TpString4_>(err_id))
+            , err_id_(std::forward<TpString3_>(err_id))
             , unrecog_args_()
             , max_unrecog_args_(max_unrecog_args)
             , relational_constrs_()
@@ -197,11 +194,6 @@ public:
         }
     
         hlp_menus_.insert(std::make_pair(default_hlp_menu_id_, vector_type<ihelp_text_type*>()));
-    
-        if (speed::stringutils::get_string_length(prog_desc) != 0)
-        {
-            add_help_text(std::forward<TpString2_>(prog_desc));
-        }
     }
     
     /**
@@ -1051,9 +1043,12 @@ public:
         }
         
         // Set all arguments as parsed.
-        for (auto& x : bse_arg_map_)
+        for (auto& x : ihlp_text_list_)
         {
-            x.second->set_parsed(true);
+            if ((bse_arg = dynamic_cast<base_arg_type*>(x)) != nullptr)
+            {
+                bse_arg->set_parsed(true);
+            }
         }
         
         // Set argument parser flags if there are errors.
@@ -1528,15 +1523,14 @@ public:
         if (flgs_.is_set(arg_parser_flags::PRINT_USAGE_WHEN_PRINT_HELP))
         {
             // Get the number of no terminal key arguments.
-            for (auto& x : bse_arg_map_)
+            for (auto& x : ihlp_text_list_)
             {
-                ky_arg = dynamic_cast<key_arg_type*>(x.second);
+                ky_arg = dynamic_cast<key_arg_type*>(x);
                 
                 if (ky_arg != nullptr &&
-                    n_ky_args < 2 &&
                     !ky_arg->flag_is_set(arg_flags::IS_TERMINAL))
                 {
-                    n_ky_args++;
+                    ++n_ky_args;
     
                     if (n_ky_args > 1)
                     {
@@ -2192,15 +2186,19 @@ private:
      */
     void update_error_flags() noexcept
     {
+        base_arg_type* bse_arg;
         bool in = false;
         
-        for (auto& x : bse_arg_map_)
+        for (auto& x : ihlp_text_list_)
         {
-            x.second->update_error_flags();
-            if (x.second->there_are_errors() && !in)
+            if ((bse_arg = dynamic_cast<base_arg_type*>(x)) != nullptr)
             {
-                in = true;
-                err_flgs_.set(arg_parser_error_flags::ARGS_ERROR);
+                bse_arg->update_error_flags();
+                if (bse_arg->there_are_errors() && !in)
+                {
+                    in = true;
+                    err_flgs_.set(arg_parser_error_flags::ARGS_ERROR);
+                }
             }
         }
         if (!in)
@@ -2242,9 +2240,9 @@ private:
     {
         key_arg_type* key_arg;
         
-        for (auto& x : bse_arg_map_)
+        for (auto& x : ihlp_text_list_)
         {
-            if ((key_arg = dynamic_cast<key_arg_type*>(x.second)) != nullptr)
+            if ((key_arg = dynamic_cast<key_arg_type*>(x)) != nullptr)
             {
                 if (key_arg->flag_is_set(arg_flags::IS_TERMINAL))
                 {

@@ -149,6 +149,9 @@ enum class arg_value_types : std::uint32_t
     /** Argument value executable directory type. */
     X_DIR = 0x4000'0000,
     
+    /** Argument value creatable directory type. */
+    C_DIR = 0x8000'0000,
+    
     /** Argument value readable and writable directory type. */
     RW_DIR = R_DIR | W_DIR,
     
@@ -161,8 +164,11 @@ enum class arg_value_types : std::uint32_t
     /** Argument value readable, writable and executable directory type. */
     RWX_DIR = R_DIR | W_DIR | X_DIR,
     
+    /** Argument value readable, writable, executable and creatable directory type. */
+    RWXC_DIR = R_DIR | W_DIR | X_DIR | C_DIR,
+    
     /** All argument value types. */
-    ALL = 0x7FFF'FFFF
+    ALL = 0xFFFF'FFFF
 };
 
 

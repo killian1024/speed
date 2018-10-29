@@ -234,7 +234,7 @@ operator >>(const TpIntegral& lhs, const TpEnum& rhs)
 {
     typedef std::underlying_type_t<TpEnum> underlying_type;
     return static_cast<TpEnum>(static_cast<underlying_type>(lhs) >>
-            static_cast<underlying_type>(rhs));
+                               static_cast<underlying_type>(rhs));
 }
 
 
@@ -259,7 +259,7 @@ operator |=(T& lhs, const T& rhs)
 {
     typedef std::underlying_type_t<T> underlying_type;
     return (lhs = static_cast<T>(static_cast<underlying_type>(lhs) |
-            static_cast<underlying_type>(rhs)));
+                                 static_cast<underlying_type>(rhs)));
 }
 
 
@@ -272,7 +272,7 @@ operator |=(TpEnum& lhs, const TpIntegral& rhs)
 {
     typedef std::underlying_type_t<TpEnum> underlying_type;
     return (lhs = static_cast<TpEnum>(static_cast<underlying_type>(lhs) |
-            static_cast<underlying_type>(rhs)));
+                                      static_cast<underlying_type>(rhs)));
 }
 
 
@@ -285,7 +285,7 @@ operator |=(TpIntegral& lhs, const TpEnum& rhs)
 {
     typedef std::underlying_type_t<TpEnum> underlying_type;
     return (lhs = static_cast<TpIntegral>(static_cast<underlying_type>(lhs) |
-            static_cast<underlying_type>(rhs)));
+                                          static_cast<underlying_type>(rhs)));
 }
 
 

@@ -269,6 +269,24 @@ inline bool symlink(
 }
 
 
+// TODO(killian.poulaud@etu.upmc.fr): Test this function.
+/**
+ * @brief       Attempts to create a regular file.
+ * @param       regfle_path : The path of the new regular file.
+ * @param       mods : Specifies the mode for the new regular file.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+inline bool touch(
+        const char* regfle_path,
+        std::uint32_t mods = 0755,
+        std::error_code* err_code = nullptr
+) noexcept
+{
+    return SPEED_SELECT_API(touch, false, regfle_path, mods, err_code);
+}
+
+
 }
 }
 

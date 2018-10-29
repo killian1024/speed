@@ -39,7 +39,7 @@ TEST(argparse_arg_parser, add_help_text)
     std::string help_text_2 = "bye";
     std::string expected_result("hello\nworld\nbye\n");
     
-    speed::argparse::arg_parser ap1("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap1("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                             speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                   ~speed::argparse::apf_t::EXIT_ON_PRINT_HELP &
                                   ~speed::argparse::apf_t::PRINT_USAGE_WHEN_PRINT_HELP);
@@ -430,7 +430,7 @@ TEST(argparse_arg_parser, parse_args_t5)
 {
     std::vector<const char*> argv = {"speed", "-sm", "10", "-h", "30"};
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.add_key_value_arg({"--seconds", "-s"}, "Set seconds", {speed::argparse::avt_t::UINT64});
@@ -447,7 +447,7 @@ TEST(argparse_arg_parser, parse_args_t6)
 {
     std::vector<const char*> argv = {"speed", "-n", "Mario", "-sm", "30", "2"};
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.add_key_value_arg({"--names", "-n"}, "Set names", {speed::argparse::avt_t::STRING}, 1, 2);
@@ -506,7 +506,7 @@ TEST(argparse_arg_parser, parse_args_t9)
             "-s", "10"
     };
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.parse_args(argv.size(), argv);
@@ -525,7 +525,7 @@ TEST(argparse_arg_parser, parse_args_t10)
             "-f"
     };
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                            speed::argparse::apf_t::PRINT_ERRORS);
     
     ap.add_key_arg({"-r", "--recursive"}, "Recursive");
@@ -550,7 +550,7 @@ TEST(argparse_arg_parser, parse_args_t11)
             "-r"
     };
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                            speed::argparse::apf_t::PRINT_ERRORS);
     
     ap.add_key_arg({"-r", "--recursive"}, "Recursive");
@@ -572,7 +572,7 @@ TEST(argparse_arg_parser, reset_args_parse)
             "-s", "10"
     };
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.parse_args(argv.size(), argv);
@@ -600,7 +600,7 @@ TEST(argparse_arg_parser, help_arg_found)
     std::vector<const char*> argv1 = {"speed", "--help"};
     std::vector<const char*> argv2 = {"speed", "--all"};
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_HELP_WHEN_HELP_ARG_FOUND &
                                    ~speed::argparse::apf_t::PRINT_VERSION_WHEN_VERSION_ARG_FOUND);
@@ -618,7 +618,7 @@ TEST(argparse_arg_parser, version_arg_found)
     std::vector<const char*> argv1 = {"speed", "--all"};
     std::vector<const char*> argv2 = {"speed", "--version"};
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_HELP_WHEN_HELP_ARG_FOUND &
                                    ~speed::argparse::apf_t::PRINT_VERSION_WHEN_VERSION_ARG_FOUND);
@@ -787,7 +787,7 @@ TEST(argparse_arg_parser, get_arg_values_as_2)
 
 TEST(argparse_arg_parser, flag_is_raised)
 {
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                          speed::argparse::apf_t::PRINT_HELP_WHEN_HELP_ARG_FOUND);
     EXPECT_TRUE(ap.flag_is_set(speed::argparse::apf_t::PRINT_HELP_WHEN_HELP_ARG_FOUND));
     EXPECT_TRUE(!ap.flag_is_set(speed::argparse::apf_t::PRINT_VERSION_WHEN_VERSION_ARG_FOUND));
@@ -798,7 +798,7 @@ TEST(argparse_arg_parser, error_flag_is_raised)
 {
     std::vector<const char*> argv = {"speed", "-h", "30"};
 
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.add_key_value_arg({"-s"}, "Seconds to set", {speed::argparse::avt_t::INT32});
@@ -812,7 +812,7 @@ TEST(argparse_arg_parser, there_are_errors)
 {
     std::vector<const char*> argv = {"speed", "-h", "30"};
 
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::DEFAULT_ARG_PARSER_FLAGS &
                                    ~speed::argparse::apf_t::PRINT_ERRORS);
     ap.add_key_value_arg({"-s"}, "Seconds to set", {speed::argparse::avt_t::INT32});
@@ -829,7 +829,7 @@ TEST(argparse_arg_parser, print_help)
     
     std::vector<const char*> argv = {"speed", "--help"};
     
-    speed::argparse::arg_parser ap("", "", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
+    speed::argparse::arg_parser ap("", {"-"}, {"--"}, 2u, 80u, 2u, "--help", "error", ~0u,
                                    speed::argparse::apf_t::PRINT_ARGS_ID_WHEN_PRINT_HELP);
     ap.add_key_value_arg({"-s"}, "Seconds to set", {speed::argparse::avt_t::INT32});
     ap.add_key_value_arg({"-m"}, "Minutes to set", {speed::argparse::avt_t::INT32});

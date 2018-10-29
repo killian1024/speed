@@ -118,6 +118,32 @@ TEST(stringutils_c_string_utils, strnchr)
 }
 
 
+TEST(stringutils_c_string_utils, strrchr)
+{
+    char str1[32] = "kkbb";
+    wchar_t str2[32] = L"kkzz";
+    
+    EXPECT_TRUE(speed::stringutils::strrchr(str1, 'b') == &str1[3]);
+    EXPECT_TRUE(speed::stringutils::strrchr(str2, 'z') == &str2[3]);
+    EXPECT_TRUE(speed::stringutils::strrchr(str1, 'l') == nullptr);
+    EXPECT_TRUE(speed::stringutils::strrchr(str2, 'l') == nullptr);
+}
+
+
+TEST(stringutils_c_string_utils, strrnchr)
+{
+    char str1[32] = "kkbb";
+    wchar_t str2[32] = L"kkzz";
+    
+    EXPECT_TRUE(speed::stringutils::strrnchr(str1, 'b', 4) == &str1[3]);
+    EXPECT_TRUE(speed::stringutils::strrnchr(str1, 'b', 2) == nullptr);
+    EXPECT_TRUE(speed::stringutils::strrnchr(str2, 'z', 4) == &str2[3]);
+    EXPECT_TRUE(speed::stringutils::strrnchr(str2, 'z', 2) == nullptr);
+    EXPECT_TRUE(speed::stringutils::strrnchr(str1, 'l', 4) == nullptr);
+    EXPECT_TRUE(speed::stringutils::strrnchr(str2, 'l', 4) == nullptr);
+}
+
+
 TEST(stringutils_c_string_utils, strsplit)
 {
     char str1[32] = "1;2;3;4;5;6";

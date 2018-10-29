@@ -28,8 +28,10 @@
 #ifdef SPEED_GLIBC
 
 #include <sys/stat.h>
-#include <filesystem>
+#include <limits.h>
+#include <stdlib.h>
 
+#include "../../stringutils.hpp"
 #include "filesystem.hpp"
 
 
@@ -74,19 +76,34 @@ bool access(
     
     if ((acss_modes & access_modes::CREATE) != access_modes::NIL)
     {
-        // TODO(killian.poulaud@etu.upmc.fr): Deal with this case correctly.
-        try
+        if (glibc::access(fle_path, access_modes::EXISTS))
         {
-            std::filesystem::path file_pth_obj(fle_path);
-    
-            if (!glibc::access(file_pth_obj.parent_path().c_str(), access_modes::EXECUTE,
-                               err_code) ||
-                !glibc::access(fle_path, access_modes::EXISTS | access_modes::WRITE, err_code))
-            {
-                return false;
-            }
+            return false;
         }
-        catch (...)
+        
+        char rel_pth[PATH_MAX] = {0};
+        std::size_t rel_pth_len;
+        
+        if (::realpath(fle_path, rel_pth) == nullptr)
+        {
+            return false;
+        }
+        rel_pth_len = stringutils::strlen(rel_pth);
+        
+        if (rel_pth[rel_pth_len - 1] == '/')
+        {
+            rel_pth[rel_pth_len - 1] = 0;
+            --rel_pth_len;
+        }
+        if (rel_pth_len == 0)
+        {
+            assign_system_error_code(EPERM, err_code);
+            return false;
+        }
+        
+        stringutils::strcut(rel_pth, '/');
+        
+        if (!glibc::access(rel_pth, access_modes::WRITE | access_modes::EXECUTE, err_code))
         {
             return false;
         }
@@ -172,7 +189,7 @@ uint64_t get_file_inode(const char* fle_path, std::error_code* err_code) noexcep
     if (::lstat(fle_path, &stt) == -1)
     {
         assign_system_error_code(errno, err_code);
-        return -1;
+        return ~0ul;
     }
     
     return stt.st_ino;
@@ -338,6 +355,18 @@ bool rmdir(const char* dir_path, std::error_code* err_code) noexcept
 bool symlink(const char* trg, const char* lnk_pth, std::error_code* err_code) noexcept
 {
     if (::symlink(trg, lnk_pth) == -1)
+    {
+        assign_system_error_code(errno, err_code);
+        return false;
+    }
+    
+    return true;
+}
+
+
+bool touch(const char* regfle_path, std::uint32_t mods, std::error_code* err_code) noexcept
+{
+    if (::mknod(regfle_path, mods, S_IFREG) == -1)
     {
         assign_system_error_code(errno, err_code);
         return false;

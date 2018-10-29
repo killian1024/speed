@@ -211,6 +211,20 @@ bool rmdir(const char* dir_path, std::error_code* err_code = nullptr) noexcept;
 bool symlink(const char* trg, const char* lnk_pth, std::error_code* err_code = nullptr) noexcept;
 
 
+/**
+ * @brief       Attempts to create a regular file.
+ * @param       regfle_path : The path of the new regular file.
+ * @param       mods : Specifies the mode for the new regular file.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+bool touch(
+        const char* regfle_path,
+        std::uint32_t mods = 0755,
+        std::error_code* err_code = nullptr
+) noexcept;
+
+
 }
 }
 }

@@ -110,11 +110,12 @@ public:
             , err_flgs_(arg_value_error_flags::NIL)
             , invalid_pth_(false)
             , err_message_()
+            , fles_created_(false)
             , compo_(compo)
     {
         for (auto& x : typ_)
         {
-            if (!(this->*avt_to_check_value[get_avt_index(x)])())
+            if (!(this->*avt_to_check_value[get_avt_index(x)])(x))
             {
                 err_flgs_.set(arg_value_error_flags::WRONG_VALUE_ERROR);
             }
@@ -446,7 +447,7 @@ private:
             !speed::type_traits::is_path<TpTarget_>::value,
             bool
     >
-    check_value()
+    check_value(arg_value_types cur_avt)
     {
         if (std::is_arithmetic<TpTarget_>::value)
         {
@@ -461,14 +462,21 @@ private:
         }
         
         TpTarget_ aux;
-        bool scs = speed::type_casting::try_type_cast<TpTarget_>(val_, &aux);
-        
-        if (!scs && std::is_arithmetic<TpTarget_>::value)
+        if (!speed::type_casting::try_type_cast<TpTarget_>(val_, &aux))
         {
-            err_message_ = "Invalid number";
+            if (std::is_arithmetic<TpTarget_>::value)
+            {
+                err_message_ = "Invalid number";
+            }
+            else
+            {
+                err_message_ = "Invalid argument";
+            }
+            
+            return false;
         }
         
-        return scs;
+        return true;
     }
     
     /**
@@ -480,36 +488,60 @@ private:
             speed::type_traits::is_path<TpTarget_>::value,
             bool
     >
-    check_value()
+    check_value(arg_value_types cur_avt)
     {
-        bool scs = true;
         std::error_code err_code;
         speed::system::ft_t ft = speed::system::ft_t::NIL;
-        
-        for (auto& x : typ_)
+        bool succss = true;
+    
+        if (!fles_created_)
         {
-            if (!speed::system::access(val_.c_str(),
-                                       avt_to_am[get_avt_file_index(x)],
-                                       avt_to_ft[get_avt_file_index(x)],
-                                       &err_code))
+            fles_created_ = true;
+            
+            if (!speed::system::access(val_.c_str(), speed::system::am_t::EXISTS))
             {
-                if (x >= arg_value_types::R_REG_FILE && x < arg_value_types::R_DIR)
+                if (typ_.is_set(arg_value_types::C_REG_FILE))
                 {
-                    ft = speed::system::ft_t::REGULAR_FILE;
+                    if (!speed::system::touch(val_.c_str(), 0644, &err_code))
+                    {
+                        err_message_ = err_code.message();
+                        succss = false;
+                    }
                 }
-                else if (x >= arg_value_types::R_DIR)
+                if (typ_.is_set(arg_value_types::C_DIR))
                 {
-                    ft = speed::system::ft_t::DIRECTORY;
+                    if (!speed::system::mkdir(val_.c_str(), 0755, &err_code))
+                    {
+                        err_message_ = err_code.message();
+                        succss = false;
+                    }
                 }
-                
-                scs = false;
             }
         }
         
-        if (!scs)
+        if (cur_avt != arg_value_types::C_REG_FILE &&
+            cur_avt != arg_value_types::C_DIR &&
+            !speed::system::access(val_.c_str(),
+                                   avt_to_am[get_avt_file_index(cur_avt)],
+                                   avt_to_ft[get_avt_file_index(cur_avt)],
+                                   &err_code))
+        {
+            if (cur_avt >= arg_value_types::R_REG_FILE && cur_avt < arg_value_types::R_DIR)
+            {
+                ft = speed::system::ft_t::REGULAR_FILE;
+            }
+            else if (cur_avt >= arg_value_types::R_DIR)
+            {
+                ft = speed::system::ft_t::DIRECTORY;
+            }
+            
+            succss = false;
+        }
+        
+        if (!succss)
         {
             invalid_pth_ = true;
-            
+    
             if (err_code.value() == EINVAL)
             {
                 if (ft == speed::system::ft_t::NIL)
@@ -530,8 +562,8 @@ private:
                 err_message_ = err_code.message();
             }
         }
-    
-        return scs;
+        
+        return succss;
     }
     
     /**
@@ -581,14 +613,16 @@ private:
     /** Message to be displayed when there are errors. */
     string_type err_message_;
     
+    bool fles_created_;
+    
     /** Composite flags. */
     const value_arg_type* compo_;
     
     /** Pointer to a method. */
-    typedef bool (basic_arg_value::*p_check_value)();
+    typedef bool (basic_arg_value::*p_check_value)(arg_value_types);
     
     /** Array to match an argument value type with the check_value class method to execute. */
-    static constexpr p_check_value avt_to_check_value[31] = {
+    static constexpr p_check_value avt_to_check_value[32] = {
             &basic_arg_value::check_value<bool>,
             &basic_arg_value::check_value<double>,
             &basic_arg_value::check_value<float>,
@@ -619,11 +653,12 @@ private:
             &basic_arg_value::check_value<std::filesystem::path>,
             &basic_arg_value::check_value<std::filesystem::path>,
             &basic_arg_value::check_value<std::filesystem::path>,
+            &basic_arg_value::check_value<std::filesystem::path>,
             &basic_arg_value::check_value<std::filesystem::path>
     };
     
     /** Array to match an argument value type that is a file with an access mode. */
-    static constexpr speed::system::am_t avt_to_am[10] = {
+    static constexpr speed::system::am_t avt_to_am[11] = {
             speed::system::am_t::READ,
             speed::system::am_t::WRITE,
             speed::system::am_t::EXECUTE,
@@ -633,21 +668,23 @@ private:
             speed::system::am_t::CREATE,
             speed::system::am_t::READ,
             speed::system::am_t::WRITE,
-            speed::system::am_t::EXECUTE
+            speed::system::am_t::EXECUTE,
+            speed::system::am_t::CREATE
     };
     
     /** Array to match an argument value type that is a file with a file type. */
-    static constexpr speed::system::ft_t avt_to_ft[10] = {
+    static constexpr speed::system::ft_t avt_to_ft[11] = {
             speed::system::ft_t::NIL,
             speed::system::ft_t::NIL,
             speed::system::ft_t::NIL,
             speed::system::ft_t::REGULAR_FILE,
             speed::system::ft_t::REGULAR_FILE,
             speed::system::ft_t::REGULAR_FILE,
-            speed::system::ft_t::REGULAR_FILE,
+            speed::system::ft_t::NIL,
             speed::system::ft_t::DIRECTORY,
             speed::system::ft_t::DIRECTORY,
-            speed::system::ft_t::DIRECTORY
+            speed::system::ft_t::DIRECTORY,
+            speed::system::ft_t::NIL
     };
 };
 
