@@ -47,31 +47,33 @@ bool access(
 ) noexcept
 {
     decltype(F_OK) mode_buildr = 0;
+    bool check = false;
     
     if ((acss_modes & access_modes::EXISTS) != access_modes::NIL)
     {
+        check = true;
         mode_buildr |= F_OK;
     }
     if ((acss_modes & access_modes::READ) != access_modes::NIL)
     {
+        check = true;
         mode_buildr |= R_OK;
     }
     if ((acss_modes & access_modes::WRITE) != access_modes::NIL)
     {
+        check = true;
         mode_buildr |= W_OK;
     }
     if ((acss_modes & access_modes::EXECUTE) != access_modes::NIL)
     {
+        check = true;
         mode_buildr |= X_OK;
     }
     
-    if (mode_buildr != 0)
+    if (check && ::access(fle_path, mode_buildr) == -1)
     {
-        if (::access(fle_path, mode_buildr) == -1)
-        {
-            assign_system_error_code(errno, err_code);
-            return false;
-        }
+        assign_system_error_code(errno, err_code);
+        return false;
     }
     
     if ((acss_modes & access_modes::CREATE) != access_modes::NIL)

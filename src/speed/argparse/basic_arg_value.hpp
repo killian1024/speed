@@ -79,6 +79,7 @@ public:
             , err_flgs_(arg_value_error_flags::NIL)
             , invalid_pth_(false)
             , err_message_()
+            , fles_created_(false)
             , compo_(nullptr)
     {
     }
