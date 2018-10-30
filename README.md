@@ -36,9 +36,9 @@ incorporated into an existing CMake build for another project.
 #### Dependencies ####
 
 In order to compile this software you have to use a C++ revision equal or highter to C++17 
-(ISO/IEC 14882:2017). Also the following libraries and tools are necessary with a version equal or 
+(ISO/IEC 14882:2017). Also the following tools and libraries are necessary with a version equal or 
 highter the specified one:
-- GCC 8.0.1
+- GCC 8.1.0
 - CMake 3.9
 - Google Test 1.8
 
