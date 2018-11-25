@@ -10,14 +10,23 @@ structure (due to practical reasons) among other things).
 
 speed is composed of a set of modules and each of them has a specific purpose:
 
-- argparse : The argparse module makes it easy to write user-friendly command-line interfaces. The program defines what arguments it requires, and argparse will figure out how to parse those out of argc and argv. The argparse module also automatically generates help, usage messages and issues errors when users give the program invalid arguments.
-- containers : The containers module implement holder objects that stores a collection of other objects (its elements). They are implemented as class templates, which allows a great flexibility in the types supported as elements.
-- exception : Defines the base class for all exceptions thrown by the elements of the speed library, along with several types and utilities to assist handling exceptions.
+- algorithm : Defines a collection of functions especially designed to be used on ranges of 
+elements.
+- argparse : The argparse module makes it easy to write user-friendly command-line interfaces. The 
+program defines what arguments it requires, and argparse will figure out how to parse those out of 
+argc and argv. The argparse module also automatically generates help, usage messages and issues 
+errors when users give the program invalid arguments.
+- containers : The containers module implement holder objects that stores a collection of other 
+objects (its elements). They are implemented as class templates, which allows a great flexibility 
+in the types supported as elements.
+- exception : Defines the base class for all exceptions thrown by the elements of the speed library, 
+along with several types and utilities to assist handling exceptions.
 - iostream : Defines a set of resources for operate with standard input/output stream objects.
 - lowlevel : Implement some resources make it easy commons lowlevel operations.
 - math : This module is currently empty.
 - scalars : Defines a set of resources for operate with scalars objects.
-- stringutils : Defines several functions to manipulate, C strings, arrays and Strings is a generic context.
+- stringutils : Defines several functions to manipulate, C strings, arrays and Strings is a generic 
+context.
 - system : Defines a set of resources to interact with the system.
 - time : Defines a set of resources to do common time operations.
 - type_casting : Defines some function allowing type casting.

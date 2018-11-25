@@ -184,6 +184,18 @@ bool chdir(const char* dir_path, std::error_code* err_code) noexcept
 }
 
 
+bool closedir(directory_entity* dir_ent, std::error_code* err_code) noexcept
+{
+    if (::closedir(dir_ent->dir) == -1)
+    {
+        assign_system_error_code(errno, err_code);
+        return false;
+    }
+    
+    return true;
+}
+
+
 uint64_t get_file_inode(const char* fle_path, std::error_code* err_code) noexcept
 {
     struct ::stat stt;
@@ -337,6 +349,40 @@ bool mkdir(const char* dir_path, std::uint32_t mods, std::error_code* err_code) 
         assign_system_error_code(errno, err_code);
         return false;
     }
+    
+    return true;
+}
+
+
+bool opendir(
+        directory_entity* dir_ent,
+        const char *dir_pth,
+        std::error_code* err_code
+) noexcept
+{
+    if ((dir_ent->dir = ::opendir(dir_pth)) == nullptr)
+    {
+        assign_system_error_code(errno, err_code);
+        return false;
+    }
+    
+    dir_ent->ino = dir_ent->entry->d_ino;
+    dir_ent->pth = dir_ent->entry->d_name;
+    
+    return true;
+}
+
+
+bool readdir(directory_entity* dir_ent, std::error_code* err_code) noexcept
+{
+    if ((dir_ent->entry = ::readdir(dir_ent->dir)) == nullptr)
+    {
+        assign_system_error_code(errno, err_code);
+        return false;
+    }
+    
+    dir_ent->ino = dir_ent->entry->d_ino;
+    dir_ent->pth = dir_ent->entry->d_name;
     
     return true;
 }

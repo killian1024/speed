@@ -41,6 +41,12 @@ namespace system {
 
 
 /**
+ * @brief       Struct that represents a directory entity. Is used for directory iterations.
+ */
+struct directory_entity;
+
+
+/**
  * @brief       Checks whether the calling process can access the file path. If pathname is a
  *              symbolic link, it is dereferenced.
  * @param       fle_path : The file path.
@@ -87,6 +93,19 @@ inline bool access(
 inline bool chdir(const char* dir_path, std::error_code* err_code = nullptr) noexcept
 {
     return SPEED_SELECT_API(chdir, false, dir_path, err_code);
+}
+
+
+/**
+ * @brief       Closes the directory stream.
+ * @param       dir_ent : The directory entity.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful a pointer to the directory is returned, otherwise nullptr
+ *              is returned.
+ */
+inline bool closedir(directory_entity* dir_ent, std::error_code* err_code = nullptr) noexcept
+{
+    return SPEED_SELECT_API(closedir, false, dir_ent, err_code);
 }
 
 
@@ -237,6 +256,36 @@ inline bool mkdir(
 ) noexcept
 {
     return SPEED_SELECT_API(mkdir, false, dir_path, mods, err_code);
+}
+
+
+/**
+ * @brief       Opens a directory stream corresponding to the directory name, and returns a pointer
+ *              to the directory stream.
+ * @param       dir_ent : The directory entity.
+ * @param       dir_pth : The path of the directory.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+inline bool opendir(
+        directory_entity* dir_ent,
+        const char *dir_pth,
+        std::error_code* err_code = nullptr
+) noexcept
+{
+    return SPEED_SELECT_API(opendir, false, dir_ent, dir_pth, err_code);
+}
+
+
+/**
+ * @brief       Read the next directory entry in the directory stream.
+ * @param       dir_ent : The current directory entity.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+inline bool readdir(directory_entity* dir_ent, std::error_code* err_code = nullptr) noexcept
+{
+    return SPEED_SELECT_API(readdir, false, dir_ent, err_code);
 }
 
 

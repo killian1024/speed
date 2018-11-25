@@ -30,12 +30,22 @@
 #include "../system_macros.hpp"
 #ifdef SPEED_GLIBC
 
+#include <dirent.h>
+
 #include "../data_types.hpp"
 #include "../error_code.hpp"
 
 
 namespace speed {
 namespace system {
+
+
+/**
+ * @brief       Struct that represents a directory entity. Is used for directory iterations.
+ */
+struct directory_entity;
+
+
 namespace glibc {
 
 
@@ -78,6 +88,16 @@ bool access(
  * @return      If function was successful true is returned, otherwise false is returned.
  */
 bool chdir(const char* dir_path, std::error_code* err_code = nullptr) noexcept;
+
+
+/**
+ * @brief       Closes the directory stream.
+ * @param       dir_ent : The directory entity.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful a pointer to the directory is returned, otherwise nullptr
+ *              is returned.
+ */
+bool closedir(directory_entity* dir_ent, std::error_code* err_code = nullptr) noexcept;
 
 
 /**
@@ -193,6 +213,30 @@ bool mkdir(
 
 
 /**
+ * @brief       Opens a directory stream corresponding to the directory name, and returns a pointer
+ *              to the directory stream.
+ * @param       dir_ent : The directory entity.
+ * @param       dir_pth : The path of the directory.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+ bool opendir(
+         directory_entity* dir_ent,
+         const char *dir_pth,
+         std::error_code* err_code = nullptr
+) noexcept;
+
+
+/**
+ * @brief       Read the next directory entry in the directory stream.
+ * @param       dir_ent : The current directory entity.
+ * @param       err_code : If function fails it holds the platform-dependent error code.
+ * @return      If function was successful true is returned, otherwise false is returned.
+ */
+bool readdir(directory_entity* dir_ent, std::error_code* err_code = nullptr) noexcept;
+
+
+/**
  * @brief       Delete the specified directory.
  * @param       dir_path : The path of the directory to delete.
  * @param       err_code : If function fails it holds the platform-dependent error code.
@@ -226,6 +270,38 @@ bool touch(
 
 
 }
+
+
+/**
+ * @brief       Struct that represents a directory entity. Is used for directory iterations.
+ */
+struct directory_entity
+{
+    unsigned long int ino;
+    char* pth;
+
+private:
+    DIR* dir;
+    struct dirent* entry;
+    
+    friend bool speed::system::glibc::opendir(
+            directory_entity* dir_ent,
+            const char *dir_pth,
+            std::error_code* err_code
+    ) noexcept;
+    
+    friend bool speed::system::glibc::closedir(
+            directory_entity* dir_ent,
+            std::error_code* err_code
+    ) noexcept;
+    
+    friend bool speed::system::glibc::readdir(
+            directory_entity* dir_ent,
+            std::error_code* err_code
+    ) noexcept;
+};
+
+
 }
 }
 
