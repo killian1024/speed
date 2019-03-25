@@ -38,15 +38,13 @@
 
 namespace speed {
 namespace system {
+namespace glibc {
 
 
 /**
  * @brief       Struct that represents a directory entity. Is used for directory iterations.
  */
 struct directory_entity;
-
-
-namespace glibc {
 
 
 /**
@@ -76,7 +74,7 @@ bool access(
 bool access(
         const char* fle_path,
         access_modes acss_modes,
-        file_type fle_type,
+        file_types fle_type,
         std::error_code* err_code = nullptr
 ) noexcept;
 
@@ -269,33 +267,31 @@ bool touch(
 ) noexcept;
 
 
-}
-
-
 /**
  * @brief       Struct that represents a directory entity. Is used for directory iterations.
  */
 struct directory_entity
 {
     unsigned long int ino;
-    char* pth;
+    const char* nme;
+    const char* pth;
 
 private:
     DIR* dir;
     struct dirent* entry;
     
-    friend bool speed::system::glibc::opendir(
+    friend bool opendir(
             directory_entity* dir_ent,
             const char *dir_pth,
             std::error_code* err_code
     ) noexcept;
     
-    friend bool speed::system::glibc::closedir(
+    friend bool closedir(
             directory_entity* dir_ent,
             std::error_code* err_code
     ) noexcept;
     
-    friend bool speed::system::glibc::readdir(
+    friend bool readdir(
             directory_entity* dir_ent,
             std::error_code* err_code
     ) noexcept;
@@ -303,8 +299,14 @@ private:
 
 
 }
+
+
+using directory_entity = glibc::directory_entity;
+
+
+}
 }
 
-#endif
 
+#endif
 #endif

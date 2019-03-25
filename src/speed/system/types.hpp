@@ -30,143 +30,13 @@
 #include <cstdint>
 #include <utility>
 
-#include "../lowlevel.hpp"
+#include "filesystem/types.hpp"
 
 
 namespace speed {
 namespace system {
 
-
-/**
- * @brief       Represents the files access modes.
- */
-enum class access_modes : std::uint8_t
-{
-    /** Any access mode. */
-    NIL = 0,
-    
-    /** The file exists. */
-    EXISTS = 0x1,
-    
-    /** Read is available. */
-    READ = 0x2,
-    
-    /** Write is available. */
-    WRITE = 0x4,
-    
-    /** Execute is available. */
-    EXECUTE = 0x8,
-    
-    /** Create is available. */
-    CREATE = 0x10,
-    
-    /** All access modes. */
-    FULL = 0x1F
-};
-
-
-/** Represents the files access modes. */
-using am_t = access_modes;
-
-
-/**
- * @brief       Represents the files types.
- */
-enum class file_type : std::uint8_t
-{
-    /** Any file type. */
-    NIL = 0x0,
-    
-    /** Block device. */
-    BLOCK_DEVICE = 0x1,
-    
-    /** Character device. */
-    CHARACTER_DEVICE = 0x2,
-    
-    /** Directory. */
-    DIRECTORY = 0x3,
-    
-    /** Named pipe */
-    FIFO = 0x4,
-    
-    /** Regular file. */
-    REGULAR_FILE = 0x5,
-    
-    /** Named IPC socket. */
-    SOCKET = 0x6,
-    
-    /** Symbolic link. */
-    SYMLINK = 0x7,
-};
-
-
-/** Represents the file types. */
-using ft_t = file_type;
-
-
-/**
- * @brief       Represents terminal text attributes.
- */
-enum class terminal_text_attribute : std::uint8_t
-{
-    /** Nil text attribute. */
-    NIL,
-    
-    /** Default text attribute */
-    DEFAULT,
-    
-    /** Black text. */
-    BLACK,
-    
-    /** Red text. */
-    RED,
-    
-    /** Green text. */
-    GREEN,
-    
-    /** Brown text. */
-    BROWN,
-    
-    /** Blue text. */
-    BLUE,
-    
-    /** Purple text. */
-    PURPLE,
-    
-    /** Cyan text. */
-    CYAN,
-    
-    /** Light gray text. */
-    LIGHT_GRAY,
-    
-    /** Dark gray text. */
-    DARK_GRAY,
-    
-    /** Light red text. */
-    LIGHT_RED,
-    
-    /** Light green text. */
-    LIGHT_GREEN,
-    
-    /** Yellow text. */
-    YELLOW,
-    
-    /** Light blue text. */
-    LIGHT_BLUE,
-    
-    /** Light purple text. */
-    LIGHT_PURPLE,
-    
-    /** Light cyan text. */
-    LIGHT_CYAN,
-    
-    /** White text. */
-    WHITE
-};
-
-
-/** Represents terminal text attributes. */
-using tta_t = terminal_text_attribute;
+using namespace filesystem;
 
 
 /**
@@ -294,19 +164,6 @@ struct time_specification
 
 }
 }
-
-
-/** @cond */
-namespace speed {
-namespace lowlevel {
-template<>
-struct enum_bitwise_operators<speed::system::access_modes>
-{
-    static constexpr bool enable = true;
-};
-}
-}
-/** @endcond */
 
 
 #endif

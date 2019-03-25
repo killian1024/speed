@@ -35,6 +35,9 @@
 #include "glibc/filesystem.hpp"
 #include "system_macros.hpp"
 
+#include "access_modes.hpp"
+#include "file_types.hpp"
+
 
 namespace speed {
 namespace system {
@@ -43,7 +46,7 @@ namespace system {
 /**
  * @brief       Struct that represents a directory entity. Is used for directory iterations.
  */
-struct directory_entity;
+//struct directory_entity;
 
 
 /**
@@ -76,7 +79,7 @@ inline bool access(
 inline bool access(
         const char* fle_path,
         access_modes acss_modes,
-        file_type fle_type,
+        file_types fle_type,
         std::error_code* err_code = nullptr
 )
 {

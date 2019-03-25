@@ -118,7 +118,7 @@ bool access(
 bool access(
         const char* fle_path,
         access_modes acss_modes,
-        file_type fle_type,
+        file_types fle_type,
         std::error_code* err_code
 ) noexcept
 {
@@ -126,35 +126,35 @@ bool access(
     
     switch (fle_type)
     {
-        case file_type::NIL:
+        case file_types::NIL:
             scs = true;
             break;
         
-        case file_type::BLOCK_DEVICE:
+        case file_types::BLOCK_DEVICE:
             scs = is_block_device(fle_path, err_code);
             break;
     
-        case file_type::CHARACTER_DEVICE:
+        case file_types::CHARACTER_DEVICE:
             scs = is_character_device(fle_path, err_code);
             break;
     
-        case file_type::DIRECTORY:
+        case file_types::DIRECTORY:
             scs = is_directory(fle_path, err_code);
             break;
     
-        case file_type::FIFO:
+        case file_types::FIFO:
             scs = is_fifo(fle_path, err_code);
             break;
     
-        case file_type::REGULAR_FILE:
+        case file_types::REGULAR_FILE:
             scs = is_regular_file(fle_path, err_code);
             break;
     
-        case file_type::SOCKET:
+        case file_types::SOCKET:
             scs = is_socket(fle_path, err_code);
             break;
     
-        case file_type::SYMLINK:
+        case file_types::SYMLINK:
             scs = is_symlink(fle_path, err_code);
             break;
     
@@ -367,7 +367,8 @@ bool opendir(
     }
     
     dir_ent->ino = dir_ent->entry->d_ino;
-    dir_ent->pth = dir_ent->entry->d_name;
+    dir_ent->nme = dir_ent->entry->d_name;
+    dir_ent->pth = dir_pth;
     
     return true;
 }
@@ -382,7 +383,7 @@ bool readdir(directory_entity* dir_ent, std::error_code* err_code) noexcept
     }
     
     dir_ent->ino = dir_ent->entry->d_ino;
-    dir_ent->pth = dir_ent->entry->d_name;
+    dir_ent->nme = dir_ent->entry->d_name;
     
     return true;
 }

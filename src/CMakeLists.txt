@@ -52,6 +52,12 @@ set(SPEED_EXCEPTION_SOURCE_FILES
         speed/exception.hpp
         )
 
+set(SPEED_FILESYSTEM_SOURCE_FILES
+        speed/filesystem/directory_iteration.cpp
+        speed/filesystem/directory_iteration.hpp
+        speed/filesystem.hpp
+        )
+
 set(SPEED_IOSTREAM_SOURCE_FILES
         speed/iostream/indentation.cpp
         speed/iostream/indentation.hpp
@@ -88,23 +94,26 @@ set(SPEED_STRINGUTILS_SOURCE_FILES
         )
 
 set(SPEED_SYSTEM_SOURCE_FILES
-        speed/system/glibc/filesystem.cpp
-        speed/system/glibc/filesystem.hpp
-        speed/system/glibc/process.cpp
-        speed/system/glibc/process.hpp
-        speed/system/glibc/terminal.cpp
-        speed/system/glibc/terminal.hpp
-        speed/system/glibc/time.cpp
-        speed/system/glibc/time.hpp
-        speed/system/data_types.hpp
+        speed/system/api/glibc/filesystem.cpp
+        speed/system/api/glibc/filesystem.hpp
+        speed/system/api/glibc/process.cpp
+        speed/system/api/glibc/process.hpp
+        speed/system/api/glibc/terminal.cpp
+        speed/system/api/glibc/terminal.hpp
+        speed/system/api/glibc/time.cpp
+        speed/system/api/glibc/time.hpp
+        speed/system/types.hpp
         speed/system/error_code.hpp
-        speed/system/filesystem.hpp
-        speed/system/process.hpp
+        speed/system/filesystem/access_modes.hpp
+        speed/system/filesystem/file_types.hpp
+        speed/system/filesystem/filesystem.hpp
+        speed/system/process/process.hpp
         speed/system/system_exception.hpp
         speed/system/system_macros.hpp
-        speed/system/terminal.hpp
-        speed/system/time.cpp
-        speed/system/time.hpp
+        speed/system/terminal/terminal.hpp
+        speed/system/terminal/text_attribute.hpp
+        speed/system/time/time.cpp
+        speed/system/time/time.hpp
         speed/system.hpp
         )
 
@@ -144,6 +153,7 @@ set(SPEED_SOURCE_FILES
         ${SPEED_ARGPARSE_SOURCE_FILES}
         ${SPEED_CONTAINERS_SOURCE_FILES}
         ${SPEED_EXCEPTION_SOURCE_FILES}
+        ${SPEED_FILESYSTEM_SOURCE_FILES}
         ${SPEED_IOSTREAM_SOURCE_FILES}
         ${SPEED_LOWLEVEL_SOURCE_FILES}
         ${SPEED_MATH_SOURCE_FILES}
@@ -162,6 +172,7 @@ add_library(speed_algorithm STATIC ${SPEED_ALGORITHM_SOURCE_FILES})
 add_library(speed_argparse STATIC ${SPEED_ARGPARSE_SOURCE_FILES})
 add_library(speed_containers STATIC ${SPEED_CONTAINERS_SOURCE_FILES})
 add_library(speed_exception STATIC ${SPEED_EXCEPTION_SOURCE_FILES})
+add_library(speed_filesystem STATIC ${SPEED_FILESYSTEM_SOURCE_FILES})
 add_library(speed_iostream STATIC ${SPEED_IOSTREAM_SOURCE_FILES})
 add_library(speed_lowlevel STATIC ${SPEED_LOWLEVEL_SOURCE_FILES})
 add_library(speed_math STATIC ${SPEED_MATH_SOURCE_FILES})
@@ -176,6 +187,7 @@ add_library(speed STATIC ${SPEED_SOURCE_FILES})
 target_link_libraries(speed_argparse speed_containers speed_exception speed_lowlevel 
                       speed_stringutils speed_system speed_type_casting -lstdc++fs)
 target_link_libraries(speed_containers speed_exception speed_iostream speed_type_traits)
+target_link_libraries(speed_filesystem speed_containers speed_system)
 target_link_libraries(speed_iostream speed_system)
 target_link_libraries(speed_lowlevel speed_exception speed_type_traits)
 target_link_libraries(speed_stringutils speed_type_traits)
@@ -189,6 +201,7 @@ target_link_libraries(speed
         speed_argparse
         speed_containers
         speed_exception
+        speed_filesystem
         speed_iostream
         speed_lowlevel
         speed_math
@@ -204,6 +217,7 @@ set_target_properties(speed_algorithm PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_argparse PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_containers PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_exception PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(speed_filesystem PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_iostream PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_lowlevel PROPERTIES LINKER_LANGUAGE CXX)
 set_target_properties(speed_math PROPERTIES LINKER_LANGUAGE CXX)
@@ -219,6 +233,7 @@ install(TARGETS speed_algorithm DESTINATION lib)
 install(TARGETS speed_argparse DESTINATION lib)
 install(TARGETS speed_containers DESTINATION lib)
 install(TARGETS speed_exception DESTINATION lib)
+install(TARGETS speed_filesystem DESTINATION lib)
 install(TARGETS speed_iostream DESTINATION lib)
 install(TARGETS speed_lowlevel DESTINATION lib)
 install(TARGETS speed_math DESTINATION lib)

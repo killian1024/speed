@@ -27,7 +27,9 @@
 #ifndef SPEED_FILESYSTEM_DIRECTORY_ITERATION_HPP
 #define SPEED_FILESYSTEM_DIRECTORY_ITERATION_HPP
 
+#include <filesystem>
 #include <regex>
+#include <set>
 
 #include "../containers.hpp"
 #include "../system.hpp"
@@ -36,20 +38,57 @@
 namespace speed {
 namespace filesystem {
 
+
 class directory_iteration
 {
 public:
-    directory_iteration();
+    
+    //class iterator : public containers::i_mutable_iterator<std::filesystem::path, iterator>
+    //{
+    //public:
+    //    using self_type = iterator;
+    //
+    //    using base_type = containers::i_mutable_iterator<std::filesystem::path, iterator>;
+    //
+    //    iterator(directory_iteration* compo);
+    //
+    //    ~iterator() override;
+    //
+    //    self_type& operator ++() override { return *this; };
+    //
+    //private:
+    //    std::stack<system::directory_entity> stck_;
+    //
+    //    std::set<std::uint64_t> vistd_inos_;
+    //
+    //    std::filesystem::path cur_pth_;
+    //
+    //    bool end_;
+    //
+    //    bool opend_;
+    //
+    //    directory_iteration* compo_;
+    //};
+    //
+    //directory_iteration(
+    //        std::filesystem::path dir_pth,
+    //        system::file_types fle_typs = system::file_types::NIL,
+    //        std::uint64_t deep_lv = ~0ul,
+    //        std::string regx_to_match = ""
+    //);
 
 private:
-    system::directory_entity dir_ent_;
+    std::filesystem::path dir_pth_;
     
-    containers::flags<file_type> fle_typs_;
+    containers::flags<system::file_types> fle_typs_;
     
     std::uint64_t deep_lv_;
     
     std::string regx_to_match_;
+    
+    //friend class iterator;
 };
+
 
 }
 }
